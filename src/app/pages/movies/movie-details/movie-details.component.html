@@ -1,0 +1,80 @@
+<div *ngIf="movie" class="container py-5">
+  <div class="row g-5 align-items-start">
+    <div class="col-lg-4">
+      <img [src]="'https://image.tmdb.org/t/p/w500' + movie.poster_path" class="img-fluid rounded shadow" alt="{{ movie.title }}">
+    </div>
+
+    <div class="col-lg-8">
+      <h2 class="fw-bold">{{ movie.title }}</h2>
+      <p><strong>Дата виходу:</strong> {{ movie.release_date | date: 'longDate':'':'uk' }}</p>
+      <p><strong>Рейтинг:</strong> ⭐ {{ movie.vote_average }}</p>
+      <p><strong>Опис:</strong> {{ movie.overview }}</p>
+
+      <div class="mb-3">
+        <strong>Жанри: </strong>
+     <span *ngFor="let genre of movie.genres" class="badge genre-badge me-1">
+  {{ genre.name }}
+</span>
+      </div>
+      <p><strong>Статус:</strong> {{ movie.status }}</p>
+      <p><strong>Бюджет:</strong> {{ movie.budget | currency:'USD' }}</p>
+      <p>
+      <strong>Країни: </strong>
+      <span *ngFor="let country of movie.production_countries" class="badge country-badge me-1">
+  {{ country.name }}
+</span>
+      </p>
+    </div>
+  </div>
+  <div *ngIf="trailerUrl" class="mt-5">
+    <h4>🎬 Трейлер</h4>
+    <div class="ratio ratio-16x9">
+      <iframe [src]="trailerUrl | safe" allowfullscreen class="rounded shadow"></iframe>
+    </div>
+  </div>
+  <div *ngIf="cast.length" class="mt-5">
+    <h4>🧑‍🤝‍🧑 Актори</h4>
+    <div class="row g-3">
+      <div class="col-6 col-md-4 col-lg-3" *ngFor="let actor of cast">
+        <div class="card h-100 border-0 shadow-sm">
+          <img *ngIf="actor.profile_path" [src]="'https://image.tmdb.org/t/p/w200' + actor.profile_path" class="card-img-top" alt="{{ actor.name }}">
+          <div class="card-body">
+            <h6 class="card-title mb-1">{{ actor.name }}</h6>
+            <p class="card-text text-muted">Роль: {{ actor.character }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="recommendedMovies.length > 0" class="mt-5">
+    <h4>🎞️ Рекомендовані фільми</h4>
+    <div class="d-flex overflow-auto gap-3 pb-3">
+      <div *ngFor="let movie of recommendedMovies" class="flex-shrink-0" style="width: 200px;">
+        <a [routerLink]="['/movie', movie.id]" class="text-decoration-none text-dark">
+          <div class="card h-100 shadow-sm">
+            <img [src]="'https://image.tmdb.org/t/p/w300' + movie.poster_path" class="card-img-top" alt="{{ movie.title }}">
+            <div class="card-body">
+              <h6 class="card-title">{{ movie.title }}</h6>
+              <p class="card-text">⭐ {{ movie.vote_average }}</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="reviews.length" class="mt-5">
+    <h4 class="d-flex justify-content-between align-items-center">
+      Відгуки
+      <button class="btn btn-outline-secondary" (click)="translateReviews()" [disabled]="translated">
+        🔄 Перекласти всі
+      </button>
+    </h4>
+    <div class="list-group">
+      <div class="list-group-item" *ngFor="let review of reviews">
+        <h6 class="mb-1">{{ review.author }}</h6>
+        <div class="mb-1" [innerHTML]="review.content | safeHtml"></div>
+        <small class="text-muted">{{ review.created_at | date:'medium' }}</small>
+      </div>
+    </div>
+  </div>
+</div>
